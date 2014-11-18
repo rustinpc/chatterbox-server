@@ -60,6 +60,7 @@ $(function() {
         url: app.server,
         type: 'GET',
         contentType: 'application/json',
+        // data: {},
         data: { order: '-createdAt'},
         success: function(data) {
           console.log('chatterbox: Messages fetched');
@@ -222,12 +223,12 @@ $(function() {
     },
     startSpinner: function(){
       $('.spinner img').show();
-      $('form input[type=submit]').attr('disabled', "true");
+      // $('form input[type=submit]').attr('disabled', "true");
     },
 
     stopSpinner: function(){
       $('.spinner img').fadeOut('fast');
-      $('form input[type=submit]').attr('disabled', null);
+      // $('form input[type=submit]').attr('disabled', null);
     }
   };
 }());

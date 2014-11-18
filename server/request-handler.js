@@ -44,14 +44,13 @@ this file and include it in basic-server.js so that it actually works.
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = "application/json";
 
-  if (request.url !== "/classes/messages" && request.url !== "/classes/room1") {
+  if (request.url !== "classes/messages?order=-createdAt" && request.url !== "/classes/messages" && request.url !== "/classes/room1") {
     statusCode = 404;
   }
   if (request.method === "POST"){
     statusCode = 201;
   }
 
-console.log(request.url !== "/classes/messages");
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
@@ -63,6 +62,7 @@ console.log(request.url !== "/classes/messages");
     });
     request.on('end', function() {
       body = JSON.parse(body);
+      body.createdAt = new Date();
       messageHolder.results.push(body);
     });
   }
