@@ -88,7 +88,6 @@ this file and include it in basic-server.js so that it actually works.
     if (urlArray[1]) {
       urlArray = urlArray[1].split("=");
       if (urlArray[1][0] === "-") {
-        console.log(urlArray[1].slice(1));
         sortResults(urlArray[1].slice(1),true);
       } else {
         sortResults(urlArray[1],false);
