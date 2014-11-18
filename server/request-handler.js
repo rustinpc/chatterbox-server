@@ -44,7 +44,7 @@ this file and include it in basic-server.js so that it actually works.
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = "application/json";
 
-  if (request.url !== "classes/messages?order=-createdAt" && request.url !== "/classes/messages" && request.url !== "/classes/room1") {
+  if (request.url !== "/classes/messages?order=-createdAt" && request.url !== "/classes/messages" && request.url !== "/classes/room1") {
     statusCode = 404;
   }
   if (request.method === "POST"){
@@ -63,9 +63,39 @@ this file and include it in basic-server.js so that it actually works.
     request.on('end', function() {
       body = JSON.parse(body);
       body.createdAt = new Date();
+      body.objectId =  body.createdAt.getTime();
       messageHolder.results.push(body);
     });
   }
+
+
+  var messageHolderCopy = messageHolder;
+
+  var sortResults = function(prop,dec) {
+    if (dec) {
+      messageHolderCopy.results.sort(function(a,b) {
+        return b[prop] - a[prop];
+      });
+    } else {
+      messageHolderCopy.results.sort(function(a,b) {
+        return a[prop] - b[prop];
+      });
+    }
+  };
+
+  if (request.method !== "POST") {
+    var urlArray = request.url.split("?");
+    if (urlArray[1]) {
+      urlArray = urlArray[1].split("=");
+      if (urlArray[1][0] === "-") {
+        console.log(urlArray[1].slice(1));
+        sortResults(urlArray[1].slice(1),true);
+      } else {
+        sortResults(urlArray[1],false);
+      }
+    }
+  }
+
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -74,7 +104,7 @@ this file and include it in basic-server.js so that it actually works.
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end(JSON.stringify(messageHolder));
+  response.end(JSON.stringify(messageHolderCopy));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
