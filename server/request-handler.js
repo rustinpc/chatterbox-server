@@ -15,6 +15,8 @@ this file and include it in basic-server.js so that it actually works.
 
   var messageHolder = {results:[]};
 
+  var urlParser = require("url");
+
   var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -83,12 +85,18 @@ this file and include it in basic-server.js so that it actually works.
     }
   };
 
+  // if (request.method !== "POST") {
+  //   var urlArray = urlParser.parse(request.url).pathname;
+  //   console.log(urlArray);
+  // }
+
   if (request.method !== "POST") {
-    var urlArray = request.url.split("?");
-    if (urlArray[1]) {
-      urlArray = urlArray[1].split("=");
+    var urlArray = urlParser.parse(request.url).query;
+    if (urlArray) {
+      urlArray = urlArray.split("=");
       if (urlArray[1][0] === "-") {
         sortResults(urlArray[1].slice(1),true);
+        console.log(urlArray[1].slice(1),true);
       } else {
         sortResults(urlArray[1],false);
       }
